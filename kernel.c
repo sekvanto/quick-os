@@ -2,6 +2,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "libc.h"
+#include "kernel.h"
+
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
@@ -42,14 +45,6 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 	return (uint16_t) uc | (uint16_t) color << 8;
 }
 
-size_t strlen(const char* str) 
-{
-	size_t len = 0;
-	while (str[len])
-		len++;
-	return len;
-}
-
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
@@ -83,20 +78,50 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
+/* Terminal scrolling */
+void scroll()
+{
+	for (size_t i = 0; i < VGA_HEIGHT - 1; i++) {
+		const size_t src_index = (i + 1) * VGA_HEIGHT;
+		const size_t dest_index = i * VGA_HEIGHT;
+		memcpy(&terminal_buffer[dest_index], &terminal_buffer[src_index], VGA_WIDTH);
+	}
+
+	terminal_column = 0;
+	terminal_row = VGA_HEIGHT - 1;
+	terminal_setcolor(VGA_COLOR_BLACK);
+
+	for (size_t i = 0; i < VGA_WIDTH; i++) {
+		terminal_putchar(' ');
+	}
+
+	terminal_column = 0;
+	terminal_row = VGA_HEIGHT - 1;
+}
+
 void terminal_putchar(char c) 
 {
 	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
 	if (++terminal_column == VGA_WIDTH) {
 		terminal_column = 0;
 		if (++terminal_row == VGA_HEIGHT)
-			terminal_row = 0;
+			scroll();
 	}
 }
 
 void terminal_write(const char* data, size_t size) 
 {
-	for (size_t i = 0; i < size; i++)
-		terminal_putchar(data[i]);
+	for (size_t i = 0; i < size; i++) {
+		/* newline support */
+		if (data[i] == '\n') {
+			if (++terminal_row == VGA_HEIGHT)
+				scroll();
+			terminal_column = 0;
+		/* other characters */
+		} else {
+			terminal_putchar(data[i]);
+		}
+	}
 }
 
 void terminal_writestring(const char* data) 
@@ -108,7 +133,11 @@ void kernel_main(void)
 {
 	/* Initialize terminal interface */
 	terminal_initialize();
+	terminal_setcolor(VGA_COLOR_LIGHT_BLUE);
 
 	/* Newline support is left as an exercise. */
-	terminal_writestring("Hello, kernel World!\n");
+	for (size_t i = 0; i < VGA_HEIGHT / 3; i++) {
+		terminal_writestring("Hello, kernel World!\nI'm at new line\nOne extra line\n");
+	}
+	terminal_writestring("An additional string\nSecond string\n");
 }
