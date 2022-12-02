@@ -1,8 +1,17 @@
-A tiny operating system for i686. =D
+A tiny operating system for i686
 
 ![quick-os](img/quick_os.png)
 
-### Development progress
+## Build
+
+* configure: `./config.sh`
+* install headers (optional): `./headers.sh`
+* build (optional): `./build.sh`
+* create an iso image: `./iso.sh`
+* run: `./qemu.sh`
+* clean: `./clean.sh`
+
+## Development progress
 
 Bare bones:
 * boot
@@ -17,3 +26,7 @@ VGA terminal driver:
 Architecture:
 * extensible libk and libc
 * make build system support
+
+## Credits
+
+The skeleton structure of this operating system was taken from [the following guide](https://wiki.osdev.org/Hard_Build_System) on OSDev Wiki.
