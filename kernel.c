@@ -82,21 +82,26 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 void scroll()
 {
 	for (size_t i = 0; i < VGA_HEIGHT - 1; i++) {
-		const size_t src_index = (i + 1) * VGA_HEIGHT;
-		const size_t dest_index = i * VGA_HEIGHT;
-		memcpy(&terminal_buffer[dest_index], &terminal_buffer[src_index], VGA_WIDTH);
+		const size_t src_index = (i + 1) * VGA_WIDTH;
+		const size_t dest_index = i * VGA_WIDTH;
+		// memcpy(&terminal_buffer[dest_index], &terminal_buffer[src_index], VGA_WIDTH);
+		for (size_t i = 0; i < VGA_WIDTH; i++) {
+			terminal_buffer[dest_index + i] = terminal_buffer[src_index + i];
+		}
 	}
 
 	terminal_column = 0;
 	terminal_row = VGA_HEIGHT - 1;
+	uint8_t previous_color = terminal_color;
 	terminal_setcolor(VGA_COLOR_BLACK);
 
 	for (size_t i = 0; i < VGA_WIDTH; i++) {
-		terminal_putchar(' ');
+		terminal_putentryat(' ', terminal_color, terminal_column++, terminal_row);
 	}
 
 	terminal_column = 0;
 	terminal_row = VGA_HEIGHT - 1;
+	terminal_setcolor(previous_color);
 }
 
 void terminal_putchar(char c) 
@@ -139,5 +144,10 @@ void kernel_main(void)
 	for (size_t i = 0; i < VGA_HEIGHT / 3; i++) {
 		terminal_writestring("Hello, kernel World!\nI'm at new line\nOne extra line\n");
 	}
-	terminal_writestring("An additional string\nSecond string\n");
+	terminal_writestring("An additional line\nSecond line\n");
+	terminal_putentryat('1', VGA_COLOR_RED, 20, terminal_row);
+	terminal_putentryat('2', VGA_COLOR_LIGHT_RED, 50, terminal_row);
+	terminal_writestring("\nAnd one more string\n");
+	terminal_setcolor(VGA_COLOR_CYAN);
+	terminal_writestring("\n\nTwo empty lines in between");
 }
