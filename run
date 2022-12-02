@@ -1,4 +1,0 @@
-i686-elf-as -g boot.s -o boot.o 
-i686-elf-gcc -g -c *.c -std=gnu99 -ffreestanding -O2 -Wall -Wextra 
-i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib *.o -lgcc
-qemu-system-i386 -kernel myos.bin -gdb tcp::26000
