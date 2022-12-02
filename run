@@ -1,4 +1,4 @@
 i686-elf-as -g boot.s -o boot.o 
-i686-elf-gcc -g -c libc.c vga_terminal.c kernel.c -std=gnu99 -ffreestanding -O2 -Wall -Wextra 
-i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o vga_terminal.o kernel.o libc.o -lgcc
+i686-elf-gcc -g -c *.c -std=gnu99 -ffreestanding -O2 -Wall -Wextra 
+i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib *.o -lgcc
 qemu-system-i386 -kernel myos.bin -gdb tcp::26000
