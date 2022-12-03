@@ -5,11 +5,20 @@ A tiny operating system for i686
 ## Build
 
 * configure: `./config.sh`
-* install headers (optional): `./headers.sh`
-* build (optional): `./build.sh`
 * create an iso image: `./iso.sh`
 * run: `./qemu.sh`
 * clean: `./clean.sh`
+
+### Configuration
+
+When creating an iso image, the following command-line arguments are accepted:
+```
+Options:
+-g                 print the GPL license notification.
+-h, -help          print this help.
+-v                 print software version and exit.
+-j                 the number of jobs
+```
 
 ## Dependencies
 

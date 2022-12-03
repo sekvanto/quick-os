@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-. ./build.sh
+. ./build.sh $@ # pass arguments to build script
 
 mkdir -p isodir
 mkdir -p isodir/boot

@@ -1,6 +1,11 @@
 SYSTEM_HEADER_PROJECTS="libc kernel"
 PROJECTS="libc kernel"
 
+export VERSION=0
+export PATCHLEVEL=0
+export SUBLEVEL=1
+export NAME="Quick Cherry"
+
 export MAKE=${MAKE:-make}
 export HOST=${HOST:-$(./default-host.sh)}
 
