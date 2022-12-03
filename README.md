@@ -45,6 +45,7 @@ VGA terminal driver:
 Architecture:
 * extensible libk and libc
 * make build system support
+* [hard build system](https://wiki.osdev.org/Hard_Build_System) with flexible configuration
 
 ## Credits
 
